@@ -7,7 +7,6 @@ import {
   faCommentDots,
   faBookmark,
   faShare,
-  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import "./FooterRight.css";
 
@@ -37,7 +36,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
     }
     return count;
   };
-  const hancleLikeClick = () => {
+  const handleLikeClick = () => {
     setLiked((prevLiked) => !prevLiked);
   };
   return (
@@ -66,7 +65,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
             height: "35px",
             color: liked ? "#ff0000" : "white",
           }}
-          onClick={hancleLikeClick}
+          onClick={handleLikeClick}
         />
         <p>{formatLikeCount(parseLikesCount(likes) + (liked ? 1 : 0))}</p>
       </div>
