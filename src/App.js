@@ -60,47 +60,58 @@ const videoUrls = [
 ];
 
 function App() {
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState([]); // Mảng video hiển thị
+  const [filteredVideos, setFilteredVideos] = useState([]); // Mảng video đã lọc
   const videoRefs = useRef([]);
+  const [searchQuery, setSearchQuery] = useState(""); // Giá trị tìm kiếm
 
   useEffect(() => {
-    setVideos(videoUrls);
+    setVideos(videoUrls); // Gán danh sách video ban đầu
+    setFilteredVideos(videoUrls); // Ban đầu hiển thị tất cả video
   }, []);
 
+  // Xử lý tìm kiếm
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = videos.filter((video) =>
+      video.description.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredVideos(filtered);
+  };
+
+  // Xử lý play/pause video khi cuộn màn hình
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '0px',
-      threshold: 0.8, // Adjust this value to change the scroll trigger point
+      rootMargin: "0px",
+      threshold: 0.8,
     };
 
-    // This function handles the intersection of videos
     const handleIntersection = (entries) => {
       entries.forEach((entry) => {
+        const videoElement = entry.target;
         if (entry.isIntersecting) {
-          const videoElement = entry.target;
           videoElement.play();
         } else {
-          const videoElement = entry.target;
           videoElement.pause();
         }
       });
     };
 
-    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+    const observer = new IntersectionObserver(
+      handleIntersection,
+      observerOptions
+    );
 
-    // We observe each video reference to trigger play/pause
+    // Quan sát chỉ những video đã lọc
     videoRefs.current.forEach((videoRef) => {
-      observer.observe(videoRef);
+      if (videoRef) observer.observe(videoRef);
     });
 
-    // We disconnect the observer when the component is unmounted
-    return () => {
-      observer.disconnect();
-    };
-  }, [videos]);
+    return () => observer.disconnect();
+  }, [filteredVideos]); // Lắng nghe danh sách video đã lọc
 
-  // This function handles the reference of each video
+  // Gán tham chiếu (ref) cho từng video
   const handleVideoRef = (index) => (ref) => {
     videoRefs.current[index] = ref;
   };
@@ -108,24 +119,28 @@ function App() {
   return (
     <div className="app">
       <div className="container">
-        <TopNavbar className="top-navbar" />
-        {/* Here we map over the videos array and create VideoCard components */}
-        {videos.map((video, index) => (
-          <VideoCard
-            key={index}
-            username={video.username}
-            description={video.description}
-            song={video.song}
-            likes={video.likes}
-            saves={video.saves}
-            comments={video.comments}
-            shares={video.shares}
-            url={video.url}
-            profilePic={video.profilePic}
-            setVideoRef={handleVideoRef(index)}
-            autoplay={index === 0}
-          />
-        ))}
+        <TopNavbar className="top-navbar" onSearch={handleSearch} />
+        {/* Hiển thị danh sách video đã lọc */}
+        {filteredVideos.length > 0 ? (
+          filteredVideos.map((video, index) => (
+            <VideoCard
+              key={index}
+              username={video.username}
+              description={video.description}
+              song={video.song}
+              likes={video.likes}
+              saves={video.saves}
+              comments={video.comments}
+              shares={video.shares}
+              url={video.url}
+              profilePic={video.profilePic}
+              setVideoRef={handleVideoRef(index)}
+              autoplay={index === 0}
+            />
+          ))
+        ) : (
+          <p>No videos found</p>
+        )}
         <BottomNavbar className="bottom-navbar" />
       </div>
     </div>
@@ -133,3 +148,4 @@ function App() {
 }
 
 export default App;
+
