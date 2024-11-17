@@ -7,12 +7,19 @@ import {
   faCommentDots,
   faBookmark,
   faShare,
+  faAt,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFacebook,
+  faInstagram,
+  faFacebookMessenger,
+} from "@fortawesome/free-brands-svg-icons";
 import "./FooterRight.css";
 
 function FooterRight({ likes, comments, saves, shares, profilePic }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); //popup for user
   const [userAddIcon, setUserAddIcon] = useState(faCirclePlus);
 
   const handleUserAddClick = () => {
@@ -21,6 +28,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
       setUserAddIcon(null);
     }, 3000);
   };
+
   const parseLikesCount = (count) => {
     if (typeof count == "string") {
       if (count.endsWith("K")) {
@@ -30,15 +38,22 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
     }
     return count;
   };
+
   const formatLikeCount = (count) => {
     if (count >= 1000) {
       return (count / 1000).toFixed(1) + "K";
     }
     return count;
   };
+
   const handleLikeClick = () => {
     setLiked((prevLiked) => !prevLiked);
   };
+
+  const togglePopup = () => {
+    setShowPopup(!showPopup); //toggle the popup
+  };
+
   return (
     <div className="footer-right">
       <div className="sidebar-icon">
@@ -87,7 +102,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
           <FontAwesomeIcon
             icon={faBookmark}
             style={{ width: "35px", height: "35px", color: "white" }}
-            onClick={() => setSaved}
+            onClick={() => setSaved(true)}
           />
         )}
         <p>{saved ? saves + 1 : saves}</p>
@@ -96,6 +111,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
         <FontAwesomeIcon
           icon={faShare}
           style={{ width: "35px", height: "35px", color: "white" }}
+          onClick={togglePopup}
         />
         <p>{shares}</p>
         <div className="sidebar-icon record">
@@ -105,6 +121,28 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
           />
         </div>
       </div>
+      {/* Share Popup */}
+      {showPopup && (
+        <div className="share-popup">
+          <button className="close-popup" onClick={togglePopup}>
+            X
+          </button>
+          <div className="share-options">
+            <div className="share-option">
+              <FontAwesomeIcon icon={faFacebook} className="share-icon" />
+              <p>Facebook</p>
+            </div>
+            <div className="share-option">
+              <FontAwesomeIcon icon={faInstagram} className="share-icon" />
+              <p>Instagram</p>
+            </div>
+            <div className="share-option">
+              <FontAwesomeIcon icon={faAt} className="share-icon" />
+              <p>Thread</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
