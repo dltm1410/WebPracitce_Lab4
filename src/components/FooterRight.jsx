@@ -16,6 +16,8 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import "./FooterRight.css";
 
+//need modification, footer running uncontrolable
+
 function FooterRight({ likes, comments, saves, shares, profilePic }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
