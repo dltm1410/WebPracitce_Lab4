@@ -8,6 +8,10 @@ import {
   faBookmark,
   faShare,
   faAt,
+  // Change
+  faVolumeHigh,
+  faVolumeMute,
+  // Change
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebook,
@@ -17,13 +21,15 @@ import {
 import "./FooterRight.css";
 
 //need modification, footer running uncontrolable
-
-function FooterRight({ likes, comments, saves, shares, profilePic }) {
+// Change add onMuteToggle
+function FooterRight({ likes, comments, saves, shares, profilePic, onMuteToggle }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showPopup, setShowPopup] = useState(false); //popup for user
   const [userAddIcon, setUserAddIcon] = useState(faCirclePlus);
-
+  // Change
+  const [isMuted, setIsMuted] = useState(false);
+  // Change
   const handleUserAddClick = () => {
     setUserAddIcon(faCircleCheck);
     setTimeout(() => {
@@ -55,7 +61,13 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
   const togglePopup = () => {
     setShowPopup(!showPopup); //toggle the popup
   };
-
+  // Change 
+  const handleMuteToggle = () => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    onMuteToggle?.(newMutedState);
+  };
+  // Change
   return (
     <div className="footer-right">
       <div className="sidebar-icon">
@@ -116,6 +128,15 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
           onClick={togglePopup}
         />
         <p>{shares}</p>
+          {/* Change */}
+        <div className="sidebar-icon">
+          <FontAwesomeIcon
+            icon={isMuted ? faVolumeMute : faVolumeHigh}
+            style={{ width: "35px", height: "35px", color: "white" }}
+            onClick={handleMuteToggle}
+          />
+        </div>
+          {/* Change */}
         <div className="sidebar-icon record">
           <img
             src="https://static.thenounproject.com/png/934821-200.png"

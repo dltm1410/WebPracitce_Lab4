@@ -30,6 +30,13 @@ const VideoCard = (props) => {
       videoRef.current.pause();
     }
   };
+  // Change 2
+  const handleMuteToggle = (isMuted) => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+    }
+  };
+  // Change 2
   return (
     <div className="video">
       <video
@@ -58,6 +65,9 @@ const VideoCard = (props) => {
             comments={comments}
             saves={saves}
             profilePic={profilePic}
+            /* Change */
+            onMuteToggle={handleMuteToggle}
+            /* Change */
           />
         </div>
       </div>
