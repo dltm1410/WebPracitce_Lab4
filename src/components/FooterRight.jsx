@@ -22,7 +22,15 @@ import "./FooterRight.css";
 
 //need modification, footer running uncontrolable
 // Change add onMuteToggle
-function FooterRight({ likes, comments, saves, shares, profilePic, onMuteToggle }) {
+function FooterRight({
+  likes,
+  comments,
+  saves,
+  shares,
+  profilePic,
+  onMuteToggle,
+  getVideoUrl,
+}) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showPopup, setShowPopup] = useState(false); //popup for user
@@ -61,11 +69,26 @@ function FooterRight({ likes, comments, saves, shares, profilePic, onMuteToggle 
   const togglePopup = () => {
     setShowPopup(!showPopup); //toggle the popup
   };
-  // Change 
+  // Change
   const handleMuteToggle = () => {
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
     onMuteToggle?.(newMutedState);
+  };
+
+  //câu 4
+  const handleSaveClick = async () => {
+    try {
+      const videoUrl = getVideoUrl();
+      if (!videoUrl) {
+        throw new Error("URL video không tồn tại");
+      }
+      await navigator.clipboard.writeText(videoUrl);
+      setSaved(!saved);
+      console.log("Đã copy URL video:", videoUrl);
+    } catch (err) {
+      console.error("Không thể copy URL:", err);
+    }
   };
   // Change
   return (
@@ -110,13 +133,13 @@ function FooterRight({ likes, comments, saves, shares, profilePic, onMuteToggle 
           <FontAwesomeIcon
             icon={faBookmark}
             style={{ width: "35px", height: "35px", color: "#ffc107" }}
-            onClick={() => setSaved(false)}
+            onClick={handleSaveClick}
           />
         ) : (
           <FontAwesomeIcon
             icon={faBookmark}
             style={{ width: "35px", height: "35px", color: "white" }}
-            onClick={() => setSaved(true)}
+            onClick={handleSaveClick}
           />
         )}
         <p>{saved ? saves + 1 : saves}</p>
@@ -128,7 +151,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic, onMuteToggle 
           onClick={togglePopup}
         />
         <p>{shares}</p>
-          {/* Change */}
+        {/* Change */}
         <div className="sidebar-icon">
           <FontAwesomeIcon
             icon={isMuted ? faVolumeMute : faVolumeHigh}
@@ -136,7 +159,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic, onMuteToggle 
             onClick={handleMuteToggle}
           />
         </div>
-          {/* Change */}
+        {/* Change */}
         <div className="sidebar-icon record">
           <img
             src="https://static.thenounproject.com/png/934821-200.png"

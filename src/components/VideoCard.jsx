@@ -34,16 +34,16 @@ const VideoCard = (props) => {
     }
     // change 5
     const handleKeyPress = (e) => {
-      if (e.key === 'ArrowRight') {
-        setShowInfo(prev => !prev);
+      if (e.key === "ArrowRight") {
+        setShowInfo((prev) => !prev);
       }
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setShowInfo(false);
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
     // Change 5
   }, [autoplay]);
   // Change 5
@@ -80,6 +80,14 @@ const VideoCard = (props) => {
     description,
     tags,
   };
+
+  // câu 5: hàm lấy url hiện tại
+  const getVideoUrl = () => {
+    if (videoRef.current) {
+      return videoRef.current.src;
+    }
+    return "";
+  };
   // Change 5: HandleScroll
   return (
     <div className="video" onWheel={handleScroll}>
@@ -111,6 +119,8 @@ const VideoCard = (props) => {
             /* Change */
             onMuteToggle={handleMuteToggle}
             /* Change */
+            //gọi hàm
+            getVideoUrl={getVideoUrl}
           />
         </div>
       </div>

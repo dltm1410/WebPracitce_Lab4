@@ -64,7 +64,31 @@ function App() {
   const [filteredVideos, setFilteredVideos] = useState([]); // Mảng video đã lọc
   const videoRefs = useRef([]);
   const [searchQuery, setSearchQuery] = useState(""); // Giá trị tìm kiếm
+  //câu 4
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const containerRef = useRef(null);
+  const handleMouseDown = (e) => {
+    if (e.button === 0) {
+      setIsDragging(true);
+      setStartY(e.clientY);
+      e.preventDefault();
+    }
+  };
 
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    const dy = e.clientY - startY;
+    window.scrollBy(0, -dy);
+    setStartY(e.clientY);
+    e.preventDefault();
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+  //
   useEffect(() => {
     setVideos(videoUrls); // Gán danh sách video ban đầu
     setFilteredVideos(videoUrls); // Ban đầu hiển thị tất cả video
@@ -118,7 +142,19 @@ function App() {
 
   return (
     <div className="app">
-      <div className="container">
+      <div
+        //câu 4
+        className="container"
+        ref={containerRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        style={{
+          cursor: isDragging ? "grabbing" : "grab",
+          userSelect: "none",
+        }}
+      >
         <TopNavbar className="top-navbar" onSearch={handleSearch} />
         {/* Hiển thị danh sách video đã lọc */}
         {filteredVideos.length > 0 ? (
@@ -148,4 +184,3 @@ function App() {
 }
 
 export default App;
-
