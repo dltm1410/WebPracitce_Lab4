@@ -25,27 +25,83 @@ const VideoCard = (props) => {
   } = props;
 
   const videoRef = useRef(null);
-  // Change 5
   const [showInfo, setShowInfo] = useState(false);
-  // Change 5
-  useEffect(() => {
-    if (autoplay) {
-      videoRef.current.play();
-    }
-    // change 5
-    const handleKeyPress = (e) => {
-      if (e.key === "ArrowRight") {
-        setShowInfo((prev) => !prev);
-      }
-      if (e.key === "Escape") {
-        setShowInfo(false);
-      }
-    };
+  const [isPlaying, setIsPlaying] = useState(autoplay);
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-    // Change 5
+  useEffect(() => {
+    const video = videoRef.current;
+    
+    if (video) {
+      // Pause all other videos when this one starts playing
+      const handlePlay = () => {
+        const videos = document.querySelectorAll('video');
+        videos.forEach(v => {
+          if (v !== video && !v.paused) {
+            v.pause();
+          }
+        });
+        setIsPlaying(true);
+      };
+
+      const handlePause = () => {
+        setIsPlaying(false);
+      };
+
+      // Create Intersection Observer
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            // When video is 50% visible
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+              video.play().catch(() => {
+                console.log('Autoplay prevented');
+              });
+            } else {
+              video.pause();
+            }
+          });
+        },
+        {
+          threshold: 0.5, // Trigger when 50% of the video is visible
+        }
+      );
+
+      // Start observing the video element
+      observer.observe(video);
+
+      // Add event listeners
+      video.addEventListener('play', handlePlay);
+      video.addEventListener('pause', handlePause);
+
+      // Cleanup
+      return () => {
+        observer.unobserve(video);
+        video.removeEventListener('play', handlePlay);
+        video.removeEventListener('pause', handlePause);
+      };
+    }
   }, [autoplay]);
+
+  const handleMuteToggle = (isMuted) => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+      // If unmuting, ensure this video is playing and others are paused
+      if (!isMuted && videoRef.current.paused) {
+        videoRef.current.play();
+      }
+    }
+  };
+
+  const onVideoPress = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  };
+
   // Change 5
   const handleScroll = (e) => {
     if (e.deltaX > 0) {
@@ -56,21 +112,6 @@ const VideoCard = (props) => {
     }
   };
   // CHang 5
-  const onVideoPress = () => {
-    if (videoRef.current.paused) {
-      videoRef.current.play();
-    } else {
-      videoRef.current.pause();
-    }
-  };
-  // Change 2
-  const handleMuteToggle = (isMuted) => {
-    if (videoRef.current) {
-      videoRef.current.muted = isMuted;
-    }
-  };
-  // Change 2
-  // Change 5
   const videoData = {
     username,
     userAvatar: profilePic,
