@@ -23,15 +23,9 @@ const VideoInfo = ({ isVisible, videoData }) => {
             {videoData.username}
             <FontAwesomeIcon icon={faCheckCircle} className="verified-icon" />
           </h3>
-          <p className="upload-date">{videoData.uploadDate}</p>
         </div>
       </div>
-      
       <div className="video-details">
-        <div className="video-stats">
-          <span className="views">{videoData.views} views</span>
-          <span className="duration">{videoData.duration}</span>
-        </div>
         <p className="video-description">{videoData.description}</p>
         <div className="video-tags">
           {videoData.tags?.map((tag, index) => (
