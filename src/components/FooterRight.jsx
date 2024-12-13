@@ -68,7 +68,7 @@ function FooterRight({
   const handleMuteToggle = () => {
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
-    onMuteToggle?.(newMutedState);
+    onMuteToggle?.(newMutedState); // This calls the parent function (VideoCard) to mute/unmute
   };
 
   //câu 4
