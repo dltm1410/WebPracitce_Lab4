@@ -3,7 +3,7 @@ import FooterLeft from "./FooterLeft";
 import FooterRight from "./FooterRight";
 import VideoInfo from "./VideoInfo";
 import "./VideoCard.css";
-// Change 5:  uploadDate, views, duration, tags, userAvatar
+
 const VideoCard = (props) => {
   const {
     url,
@@ -17,16 +17,11 @@ const VideoCard = (props) => {
     profilePic,
     setVideoRef,
     autoplay,
-    uploadDate,
-    views,
-    duration,
     tags,
-    userAvatar,
   } = props;
 
   const videoRef = useRef(null);
   const [showInfo, setShowInfo] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(autoplay);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -40,11 +35,9 @@ const VideoCard = (props) => {
             v.pause();
           }
         });
-        setIsPlaying(true);
       };
 
       const handlePause = () => {
-        setIsPlaying(false);
       };
 
       // Create Intersection Observer
@@ -102,7 +95,6 @@ const VideoCard = (props) => {
     }
   };
 
-  // Change 5
   const handleScroll = (e) => {
     if (e.deltaX > 0) {
       setShowInfo(true);
@@ -111,25 +103,22 @@ const VideoCard = (props) => {
       setShowInfo(false);
     }
   };
-  // CHang 5
+
   const videoData = {
     username,
     userAvatar: profilePic,
-    uploadDate,
-    views,
-    duration,
     description,
     tags,
   };
 
-  // câu 5: hàm lấy url hiện tại
+
   const getVideoUrl = () => {
     if (videoRef.current) {
       return videoRef.current.src;
     }
     return "";
   };
-  // Change 5: HandleScroll
+
   return (
     <div className="video" onWheel={handleScroll}>
       <video
@@ -157,15 +146,11 @@ const VideoCard = (props) => {
             comments={comments}
             saves={saves}
             profilePic={profilePic}
-            /* Change */
             onMuteToggle={handleMuteToggle}
-            /* Change */
-            //gọi hàm
             getVideoUrl={getVideoUrl}
           />
         </div>
       </div>
-      /* Change */
       <VideoInfo isVisible={showInfo} videoData={videoData} />
     </div>
   );
